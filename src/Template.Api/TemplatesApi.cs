@@ -2,15 +2,17 @@
 
 namespace Template.Api;
 
-public static class Endpoints
+public static class TemplatesApi
 {
-    public static void MapEndpoints(this WebApplication app)
+    public static void MapTemplates(this WebApplication app)
     {
         var group = app.MapGroup("templates");
 
+        group.WithTags("Templates");
+
         group.MapGet("/", () =>
         {
-            return Results.Text("Hello, Templates!");
+            return TypedResults.Ok("Hello, Templates!");
         })
         .WithName("GeTemplates")
         .WithOpenApi();
@@ -20,7 +22,7 @@ public static class Endpoints
             using var reader = new StreamReader(file.OpenReadStream());
             var content = await reader.ReadToEndAsync();
 
-            return Results.Ok(new { Length = content.Length });
+            return TypedResults.Ok(new { Length = content.Length });
         })
         .WithName("UploadTemplatesFile")
         .DisableAntiforgery();

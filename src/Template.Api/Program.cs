@@ -50,6 +50,6 @@ else
 
 app.UseHttpsRedirection();
 
-app.MapEndpoints();
+app.MapTemplates();
 
 app.Run();
