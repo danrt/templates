@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Diagnostics;
+using OwaspHeaders.Core.Extensions;
 using Serilog;
 using Template.Api;
 
@@ -15,6 +16,14 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpLogging(c =>
+{
+    c.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestBody
+        | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPath
+        | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestMethod;
+    c.CombineLogs = true;
+});
+
 var app = builder.Build();
 
 app.UseExceptionHandler(exceptionHandlerApp
@@ -29,6 +38,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseSecureHeadersMiddleware();
+
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
